@@ -1,0 +1,30 @@
+version: "3.7"
+services:
+  master:
+    build: .
+    image: centralserver
+    command: sh /scripts/start.sh
+    hostname: master
+    environment:
+      MASTER: spark://master:7077
+      SPARK_CONF_DIR: /conf
+      SPARK_PUBLIC_DNS: localhost
+    expose:
+      - 7001
+      - 7002
+      - 7003
+      - 7004
+      - 7005
+      - 7077
+      - 6066
+      - 8000
+    ports:
+      - 4040:4040
+      - 6066:6066
+      - 7077:7077
+      - 8080:8080
+      - 8000:8000
+    volumes:
+      - ./dmarket:/dmarket
+      - ./scripts:/scripts
+      - ./conf/master:/conf
