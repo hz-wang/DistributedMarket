@@ -1,0 +1,5 @@
+{
+    "status": {{status}},
+    "error_code": {{error_code}},
+    "message": "{{message}}"
+}

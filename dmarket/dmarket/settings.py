@@ -54,7 +54,7 @@ ROOT_URLCONF = 'dmarket.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['/dmarket/services/static/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
