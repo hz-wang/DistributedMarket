@@ -28,3 +28,6 @@ services:
       - ./dmarket:/dmarket
       - ./scripts:/scripts
       - ./conf/master:/conf
+  db:
+    image: postgres
+  

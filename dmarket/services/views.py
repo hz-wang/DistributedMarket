@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-
+from .models import * 
+from django.contrib.auth.models import User
 ##### User API #####
 
 def index(request):
@@ -53,10 +54,15 @@ def list_machines(request):
 
 ##### Job API #####
 def submit_job(request):
+    job = Job()
+    job.root_path = request.GET['root_path']
+    job.core_num = int(request.GET['core_num'])
+    job.user = User.objects.get(id=request.GET['id'])
+    job.save()
     context = {}
     context['status'] = True
     context['error_code'] = 0
-    context['message'] = 'Submit job API'
+    context['message'] = "job {} create successfully, all jobs:{}".format(job.job_id, Job.objects.all())
 
     return render(request, 'general_status.json', context, 
         content_type='application/json')
