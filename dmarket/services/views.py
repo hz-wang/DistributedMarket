@@ -2,6 +2,10 @@ from django.shortcuts import render
 from django.http import HttpResponse
 
 ##### User API #####
+
+def index(request):
+    return HttpResponse("Hello, world. Distributed Market.")
+    
 def register(request):
     context = {}
     context['status'] = True
