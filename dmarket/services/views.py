@@ -8,11 +8,18 @@ def index(request):
     return HttpResponse("Hello, world. Distributed Market.")
     
 def register(request):
+    username = request.GET['username']
+    email = request.GET['email']
+    password = request.GET['password']
+    user = User.objects.create_user(username, email, password)
+    user.save()
+
     context = {}
     context['status'] = True
     context['error_code'] = 0
+    context['message'] = User.objects.all()
 
-    return render(request, 'register_status.json', context, 
+    return render(request, 'general_status.json', context, 
         content_type='application/json')
 
 def login(request):
