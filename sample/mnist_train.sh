@@ -1,0 +1,22 @@
+/usr/local/spark/bin/spark-submit \
+--master yarn \
+--deploy-mode cluster \
+--queue default \
+--num-executors 2 \
+--executor-memory 2G \
+--py-files /sample/code/spark/mnist_dist.py \
+--conf spark.dynamicAllocation.enabled=false \
+--conf spark.yarn.maxAppAttempts=1 \
+--conf spark.executorEnv.LD_LIBRARY_PATH=$LIB_JVM:$LIB_HDFS \
+--conf spark.executorEnv.CLASSPATH=$(hadoop classpath --glob) \
+--conf spark.executorEnv.LIB_HDFS=$LIB_HDFS \
+--conf spark.executorEnv.LIB_JVM=$LIB_JVM \
+--conf spark.yarn.appMasterEnv.PYSPARK_PYTHON=$PYSPARK_PYTHON \
+--conf spark.pyspark.python=$PYSPARK_PYTHON \
+--conf spark.yarn.appMasterEnv.PYTHONPATH=$PYSPARK_PYTHON \
+--conf spark.executorEnv.SPARK_YARN_USER_ENV=$SPARK_YARN_USER_ENV \
+/sample/code/spark/mnist_spark.py \
+--images mnist/csv/train/images \
+--labels mnist/csv/train/labels \
+--mode train \
+--model mnist_model

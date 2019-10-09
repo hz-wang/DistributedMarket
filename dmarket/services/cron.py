@@ -1,6 +1,7 @@
 from django_cron import CronJobBase, Schedule
 from django.core.files import File
 from .spark.spark import *
+from .models import *
 
 class MyCronJob(CronJobBase):
     RUN_EVERY_MINS = 1 # every 2 hours
@@ -9,8 +10,17 @@ class MyCronJob(CronJobBase):
     code = 'services.my_cron_job'    # a unique code
 
     def do(self):
-        # f = open('/test.txt', 'a+')
-        # f.write('a\n')
-        # f.close()
+        print('cron run')
+        newJobs = Job.objects.filter(status='new')
+        if len(newJobs) == 0:
+            print('no new jobs')
+            return
+        print('has new job')
+        oneJob = newJobs.first()
+        print('after first')
+        oneJob.status = 'running'
+        print('after update')
+        oneJob.save()
+        print('after save')
         Spark.submitJob()
         return

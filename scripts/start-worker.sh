@@ -1,3 +1,4 @@
 #!/bin/bash
 
-bin/spark-class org.apache.spark.deploy.worker.Worker spark://master:7077
+/etc/init.d/ssh start
+tail -f /dev/null

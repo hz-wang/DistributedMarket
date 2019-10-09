@@ -65,6 +65,7 @@ def submit_job(request):
     job.root_path = request.GET['root_path']
     job.core_num = int(request.GET['core_num'])
     job.user = User.objects.get(id=request.GET['id'])
+    job.status = 'new'
     job.save()
     context = {}
     context['status'] = True

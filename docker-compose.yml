@@ -2,37 +2,44 @@ version: "3.7"
 services:
   master:
     build: .
-    image: centralserver
+    image: centralserver-hadoop
     command: sh /scripts/start.sh
     hostname: master
     environment:
       MASTER: spark://master:7077
       SPARK_CONF_DIR: /conf
       SPARK_PUBLIC_DNS: localhost
+    networks:
+      static-network:
+        ipv4_address: 10.0.197.2
+    extra_hosts:
+      - "master:10.0.197.2"
+      - "slave1:10.0.197.3"
+      - "slave2:10.0.197.4"
     expose:
-      - 7001
-      - 7002
-      - 7003
-      - 7004
-      - 7005
+      - 9870
       - 7077
       - 6066
-      - 8000
+      - 22
+    depends_on:
+      - "slave1"
+      - "slave2"
     ports:
-      - 4040:4040
+      - 9870:9870
       - 6066:6066
       - 7077:7077
       - 8080:8080
+      - 8088:8088
       - 8000:8000
     volumes:
       - ./dmarket:/dmarket
       - ./scripts:/scripts
-      - ./conf/master:/conf
-  worker1:
+      - ./sample:/sample
+  slave1:
     build: .
-    image: centralserver
+    image: centralserver-hadoop
     command: sh /scripts/start-worker.sh
-    hostname: worker
+    hostname: slave1
     environment:
       MASTER: spark://master:7077
       SPARK_CONF_DIR: /conf
@@ -41,19 +48,64 @@ services:
       SPARK_WORKER_MEMORY: 1g
       SPARK_WORKER_PORT: 8881
       SPARK_WORKER_WEBUI_PORT: 8081
+    networks:
+      static-network:
+        ipv4_address: 10.0.197.3
+    extra_hosts:
+      - "master:10.0.197.2"
+      - "slave1:10.0.197.3"
+      - "slave2:10.0.197.4"
     expose:
-      - 7012
-      - 7013
-      - 7014
-      - 7015
-      - 8881
-    depends_on:
-      - "master"
+      - 9870
+      - 7077
+      - 6066
+      - 8042
+      - 22
     ports:
+      - 9871:9870
+      - 8043:8042
       - 8081:8081
     volumes:
       - ./scripts:/scripts
-      - ./conf/worker:/conf
+  slave2:
+    build: .
+    image: centralserver-hadoop
+    command: sh /scripts/start-worker.sh
+    hostname: slave2
+    environment:
+      MASTER: spark://master:7077
+      SPARK_CONF_DIR: /conf
+      SPARK_PUBLIC_DNS: localhost
+      SPARK_WORKER_CORES: 2
+      SPARK_WORKER_MEMORY: 1g
+      SPARK_WORKER_PORT: 8882
+      SPARK_WORKER_WEBUI_PORT: 8082
+    networks:
+      static-network:
+        ipv4_address: 10.0.197.4
+    extra_hosts:
+      - "master:10.0.197.2"
+      - "slave1:10.0.197.3"
+      - "slave2:10.0.197.4"
+    expose:
+      - 9870
+      - 7077
+      - 6066
+      - 8042
+      - 22
+    ports:
+      - 9872:9870
+      - 8044:8042
+      - 8082:8082
+    volumes:
+      - ./scripts:/scripts
   db:
     image: postgres
-  
+    networks:
+      static-network:
+        ipv4_address: 10.0.197.5
+networks:
+  static-network:
+    ipam:
+      config:
+        - subnet: 10.0.197.0/24
