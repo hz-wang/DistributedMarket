@@ -17,10 +17,7 @@ class MyCronJob(CronJobBase):
             return
         print('has new job')
         oneJob = newJobs.first()
-        print('after first')
         oneJob.status = 'running'
-        print('after update')
         oneJob.save()
-        print('after save')
         Spark.submitJob()
         return
